@@ -52,5 +52,20 @@ docker exec CONTAINERID:/root/go/src/main
 GGO_ENABLED=0 GOOS=linux go build -a -tags netgo -installsuffix netgo -ldflags '-d -s -w -extldflags "-static"' -o app src/*.go
 ./app
 ```
+or if using `ng serve` then
+```
+./app proxy
+```
 
 If you update the imports then don't forget to copy out `Gopkg.lock`/`Gopkg.toml`.
+
+To build the app
+```
+cd my-app
+ng build -bh /databox-app-activity-summary/ui/static/
+cp dist/* ../www/
+```
+or to serve it live (using app proxy)
+```
+ng serve --host 0.0.0.0 --disable-host-check -bh /databox-app-activity-summary/ui/static/
+```
