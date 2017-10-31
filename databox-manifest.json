@@ -1,0 +1,47 @@
+{
+	"manifest-version": 1,
+
+	"name": "databox-app-activity-summary",
+	"databox-type": "app",
+	"version": "0.1.0",
+
+	"description": "A personal activity summary app. Initially showing data from the Strava driver.",
+	"author": "Chris Greenhalgh <chris.greenhalgh@nottingham.ac.uk>",
+	"license": "MIT",
+	"tags": [
+		"strava",
+		"gloang"
+	],
+
+	"homepage": "https://github.com/cgreenhalgh/databox-app-activity-summary",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/cgreenhalgh/databox-app-activity-summary"
+	},
+
+	"resource-requirements": {
+		"store": ["store-json"]
+	},
+	
+	"packages": [
+		{
+			"name": "Personal Activity Summary",
+			"purpose": "To visualize your recent activity",
+			"install": "required",
+			"risks": "None.",
+			"benefits": "You can see what you have been doing.",
+			"datastores": [ "strava_activity" ]
+		}
+	],
+
+	"allowed-combinations":[ ],
+	
+	"datasources": [
+		{
+			"type": "Strava-Activity",
+			"required": false,
+			"clientid": "strava_activity",
+			"granularities": []
+		}
+	]
+}
