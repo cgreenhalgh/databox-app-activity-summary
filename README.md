@@ -49,7 +49,7 @@ docker cp . CONTAINERID:/root/go/src/main
 BUild/run
 ```
 docker exec CONTAINERID:/root/go/src/main
-GGO_ENABLED=0 GOOS=linux go build -a -tags netgo -installsuffix netgo -ldflags '-d -s -w -extldflags "-static"' -o app /src/app.go
+GGO_ENABLED=0 GOOS=linux go build -a -tags netgo -installsuffix netgo -ldflags '-d -s -w -extldflags "-static"' -o app src/*.go
 ./app
 ```
 
