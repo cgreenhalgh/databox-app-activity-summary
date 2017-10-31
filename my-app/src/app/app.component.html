@@ -1,4 +1,11 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
+<div>
   <h1>Activity Summary</h1>
+  <h2>Data types</h2>
+  <ul>
+  	<li *ngIf="loading">Loading data types...</li>
+  	<li *ngFor="let dataType of dataTypes">
+  		{{dataType.title}}
+  	</li>
+  </ul>
 </div>

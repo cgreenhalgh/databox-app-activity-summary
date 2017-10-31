@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import { OnInit } from '@angular/core';
+
+import { DataService } from './data.service';
+import { DataType } from './types';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +10,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app';
+  loading = true;
+  dataTypes: DataType[];
+  constructor(private dataService: DataService) {}
+  ngOnInit(): void {
+	  this.dataService.getDataTypes().then(dts => { this.dataTypes = dts; this.loading = false });
+  }
 }

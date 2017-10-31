@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -24,6 +25,23 @@ func getStatusEndpoint(w http.ResponseWriter, req *http.Request) {
 	} else {
 		w.Write([]byte("starting\n"))
 	}
+}
+
+// Index of available data 
+type DataType struct{
+	Title string `json:"title"`
+	Id string `json:"id"`
+	Available bool `json:"available"`
+	dsInfo string
+}
+
+var dataTypes = []DataType{
+	DataType{
+		Title:"Strava Activities",
+		Id:"strava_activities",
+		Available:(stravaActivityInfo!=""),
+		dsInfo:stravaActivityInfo,
+	},
 }
 
 // internal http server.
@@ -73,6 +91,17 @@ func server(c chan bool) {
 		static := http.StripPrefix("/ui/static", http.FileServer(http.Dir("./www/")))
 		router.PathPrefix("/ui/static").Handler(static)
 	}
+	router.HandleFunc("/ui/api/dataTypes", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("GET dataTypes")
+		data,err := json.Marshal(dataTypes)
+		if err != nil {
+			log.Printf("Error marshalling dataTypes: %s", err.Error())
+			w.WriteHeader(500)
+			w.Write([]byte("Error marshalling dataTypes"))
+			return
+		}
+		w.Write(data)
+	}).Methods("GET")
 	http.ListenAndServeTLS(":8080", databox.GetHttpsCredentials(), databox.GetHttpsCredentials(), router)
 	log.Print("HTTP server exited?!")
 	c <- true
