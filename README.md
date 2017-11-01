@@ -3,7 +3,7 @@
 A [databox](http://github.com/me-box/databox) app intended to provide
 a visual dashboard/report on recent activity.
 
-Status: just starting.
+Status: minimal proof of concept - shows one graph of strava activity.
 
 By Chris Greenhalgh
 
@@ -63,10 +63,20 @@ If you update the imports then don't forget to copy out `Gopkg.lock`/`Gopkg.toml
 To build the app
 ```
 cd my-app
-ng build -bh /databox-app-activity-summary/ui/static/
+`npm bin`/ng build -bh /databox-app-activity-summary/ui/static/
 cp dist/* ../www/
 ```
 or to serve it live (using app proxy)
 ```
-ng serve --host 0.0.0.0 --disable-host-check -bh /databox-app-activity-summary/ui/static/
+`npm bin`/ng serve --host 0.0.0.0 --disable-host-check -bh /databox-app-activity-summary/ui/static/
 ```
+
+## Design notes
+
+Using [vega-lite](https://vega.github.io/vega-lite/) to generate graphs.
+Initial experiments suggest that this doesn't quite do what I want in terms
+of aggregating daily activities and organising presentation by day/week.
+E.g. need to think carefully about week and day cut-offs (including
+time-zone); may be simpler to aggregate outside vega and then graph,
+and think about part-day/part-week information for current day/week;
+show last 7 days or weeks starting on fixed day-of-week?
