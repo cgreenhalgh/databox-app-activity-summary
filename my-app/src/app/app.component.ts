@@ -34,31 +34,27 @@ function getExVegaLiteSpec(): any {
   return {
     "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
     "description": "A simple bar chart with embedded data.",
-    "width": 360,
+    "width": 70,
     "data": { 
       "url": "../api/get/strava_activity/"
-    /*"values": [
-        {"a": "A","b": 28 },
-        {"a": "B","b": 55},
-        {"a": "C","b": 43},
-        {"a": "D","b": 91},
-        {"a": "E","b": 81},
-        {"a": "F","b": 53},
-        {"a": "G","b": 19},
-        {"a": "H","b": 87},
-        {"a": "I","b": 52}
-      ]*/
     },
     "mark": "bar",
     "transform": [
-      {"calculate": "datum.data.distance*0.001", "as": "distance"},
-      {"calculate": "floor(datum.timestamp / (24*60*60*1000))*(24*60*60*1000)", "as": "date"},
+      {"calculate": "datum.data.distance*0.001", "as": "distance"}
+      //,{"calculate": "floor(datum.timestamp / (24*60*60*1000))*(24*60*60*1000)", "as": "date"},
+      //,{"filter": "datum.timestamp > now()-7*24*60*60*1000"}
+      ,{"calculate": "floor((now()-datum.timestamp)/(7*24*60*60*1000))", "as": "weeksAgo"}
     ],
     "encoding": {
+      "column": {
+          "field": "weeksAgo", "type": "ordinal"
+      },
       "x": {
-        "field": "date",
+        //"field": "date",
+        "field": "timestamp",
         "type": "temporal"
-        /*,"timeUnit": "day"*/
+        ,"timeUnit": "day"
+        ,"axis": {"title": "day", "grid": false}
       },
       "y": {
         "field": "distance",
@@ -68,6 +64,13 @@ function getExVegaLiteSpec(): any {
           "title":"Total distance (km)"
         }
       }
+      ,"color": {
+        "field": "weeksAgo", "type": "nominal"
+      }
+    },
+    "config": {
+      "view": {"stroke": "transparent"},
+      "axis": {"domainWidth": 1}
     }
   }
 }
