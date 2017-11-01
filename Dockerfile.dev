@@ -1,5 +1,6 @@
 # start with node as it is probably bigger
-FROM node:8.8.1-alpine
+FROM node:8.8.1-alpine as gobuild
+# FROM golang:1.8.3-alpine3.6 as gobuild
 
 # copied from https://github.com/docker-library/golang/blob/cffcff7fce7f6b6b5c82fc8f7b3331a10590a661/1.8/alpine3.6/Dockerfile
 RUN apk add --no-cache ca-certificates
@@ -19,10 +20,7 @@ RUN set -eux; \
 		go \
 	; \
 	export \
-# set GOROOT_BOOTSTRAP such that we can actually build Go
 		GOROOT_BOOTSTRAP="$(go env GOROOT)" \
-# ... and set "cross-building" related vars to the installed system's values so that we create a build targeting the proper arch
-# (for example, if our build host is GOARCH=amd64, but our build env/image is GOARCH=386, our build needs GOARCH=386)
 		GOOS="$(go env GOOS)" \
 		GOARCH="$(go env GOARCH)" \
 		GO386="$(go env GO386)" \
@@ -52,41 +50,43 @@ RUN set -eux; \
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 COPY go/go-wrapper /usr/local/bin/
 
-# And python for node-gyp!
+# And python for node-gyp! plus vega
 
-RUN apk add --no-cache linux-headers build-base \
-  python2 python2-dev py-setuptools \
-  cairo-dev
+RUN apk add --no-cache make gcc g++ python 
+# linux-headers build-base python2 python2-dev py-setuptools \
+RUN apk add --no-cache cairo-dev
+RUN apk add --no-cache git
 
 # Back to my own stuff...
 
-# angular build deps
-RUN npm install -g @angular/cli
-
-# FROM golang:1.8.3-alpine3.6 as gobuild
-RUN apk update && apk add git
 RUN mkdir -p /root/go
+# why another user??
+#RUN addgroup -S databox && adduser -S -g databox databox
+
+#RUN chown databox:databox /root/go
+# USER databox
+WORKDIR /root/go
+
 ENV GOPATH="/root/go"
 RUN go get -u github.com/golang/dep/cmd/dep
-
-RUN mkdir -p /root/go/src/main
+RUN mkdir -p /root/go/src/main/my-app
 WORKDIR /root/go/src/main
-COPY . .
 
+# angular build deps (-g ??)
+RUN cd /root/go/src/main/my-app && npm install @angular/cli
+
+ADD my-app/package.json my-app/package-lock.json my-app/
 RUN cd /root/go/src/main/my-app && npm install
 
-# RUN $GOPATH/bin/dep ensure
-
-# what's this?
-# RUN addgroup -S databox && adduser -S -g databox databox
+ADD Gopkg.* ./
+RUN $GOPATH/bin/dep ensure -vendor-only
+# ADD src src
 
 # RUN GGO_ENABLED=0 GOOS=linux go build -a -tags netgo -installsuffix netgo -ldflags '-d -s -w -extldflags "-static"' -o app src/*.go
+ADD . .
 
-# RUN cd /root/go/src/main/my-app && npm build -bh /databox-app-activity-summary/ui/ && cp dist/* ../www/
-
-# WORKDIR /root
+# RUN cd /root/go/src/main/my-app && `npm bin`/ng build -bh /databox-app-activity-summary/ui/static/ && cp dist/* ../www/
 
 EXPOSE 8080
 LABEL databox.type="app"
 CMD ["sleep","2147483647"]
-

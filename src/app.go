@@ -58,7 +58,7 @@ func server(c chan bool) {
 	if proxy {
 		// Note: this is just for development - to make it faster
 		log.Printf("Proxy static requests")
-		log.Printf("Run angular with: ng serve --host 0.0.0.0 --disable-host-check -bh /databox-app-activity-summary/ui/static/")
+		log.Printf("Run angular with: `npm bin`/ng serve --host 0.0.0.0 --disable-host-check -bh /databox-app-activity-summary/ui/static/")
 		router.HandleFunc("/ui", func(w http.ResponseWriter, r *http.Request) {
 			log.Printf("proxy %s", r.URL)
 			director := func(req *http.Request) {
@@ -92,7 +92,7 @@ func server(c chan bool) {
 		router.PathPrefix("/ui/static").Handler(static)
 	}
 	router.HandleFunc("/ui/api/dataTypes", func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("GET dataTypes (started? %s)", IsStarted())
+		log.Printf("GET dataTypes (started? %t)", IsStarted())
 		WaitUntilStarted()
 		data,err := json.Marshal(dataTypes)
 		if err != nil {
