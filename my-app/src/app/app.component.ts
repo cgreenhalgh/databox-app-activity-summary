@@ -35,8 +35,9 @@ function getExVegaLiteSpec(): any {
     "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
     "description": "A simple bar chart with embedded data.",
     "width": 360,
-    "data": {
-      "values": [
+    "data": { 
+      "url": "../api/get/strava_activity/"
+    /*"values": [
         {"a": "A","b": 28 },
         {"a": "B","b": 55},
         {"a": "C","b": 43},
@@ -46,17 +47,26 @@ function getExVegaLiteSpec(): any {
         {"a": "G","b": 19},
         {"a": "H","b": 87},
         {"a": "I","b": 52}
-      ]
+      ]*/
     },
     "mark": "bar",
+    "transform": [
+      {"calculate": "datum.data.distance*0.001", "as": "distance"},
+      {"calculate": "floor(datum.timestamp / (24*60*60*1000))*(24*60*60*1000)", "as": "date"},
+    ],
     "encoding": {
       "x": {
-        "field": "a",
-        "type": "ordinal"
+        "field": "date",
+        "type": "temporal"
+        /*,"timeUnit": "day"*/
       },
       "y": {
-        "field": "b",
-        "type": "quantitative"
+        "field": "distance",
+        "type": "quantitative",
+        "aggregate": "sum",
+        "axis":{
+          "title":"Total distance (km)"
+        }
       }
     }
   }
