@@ -22,7 +22,11 @@
     "@angular/platform-browser-dynamic": "^4.2.4",
     "@angular/router": "^4.2.4",
     "core-js": "^2.4.1",
+    "d3-selection": "^1.1.0",
     "rxjs": "^5.4.2",
+    "vega": "^3.0.7",
+    "vega-lite": "^2.0.0",
+    "vega-schema-url-parser": "^1.0.0-beta.3",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {

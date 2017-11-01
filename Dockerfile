@@ -53,6 +53,12 @@ RUN set -eux; \
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 COPY go/go-wrapper /usr/local/bin/
 
+# And python for node-gyp! plus vega
+
+RUN apk add --no-cache linux-headers build-base \
+  python2 python2-dev py-setuptools \
+  cairo-dev
+
 # Back to my own stuff...
 
 # angular build deps
